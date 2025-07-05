@@ -423,12 +423,12 @@ export default function LandingPage() {
             {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
           </Button>
 
-          <Link href="/student/login">
+          <Link href="/login">
             <Button
               variant="outline"
               className="rounded-[1.25rem] border-emerald-400 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-500 dark:text-emerald-400 dark:hover:bg-emerald-950"
             >
-              {t("nav.student")}
+              {t("login")}
             </Button>
           </Link>
           <Link href="/admin/login">
@@ -466,7 +466,7 @@ export default function LandingPage() {
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">{t("hero.subtitle")}</p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/student/login">
+              <Link href="/login">
                 <Button className="bg-emerald-400 hover:bg-emerald-500 text-white font-medium text-lg py-4 px-8 rounded-[1.25rem] transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                   {t("hero.cta1")}
                   <ArrowRight className="w-5 h-5 ml-2" />
@@ -687,7 +687,7 @@ export default function LandingPage() {
                       </span>
                     )}
                   </div>
-                  <Link href="/student/login">
+                  <Link href="/login">
                     <Button className="w-full bg-emerald-400 hover:bg-emerald-500 text-white font-medium py-2 px-4 rounded-[1.25rem] transition-all duration-200">
                       Login to Order
                     </Button>
@@ -1043,7 +1043,7 @@ export default function LandingPage() {
             Join hundreds of students who are already enjoying hassle-free food ordering
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/student/login">
+            <Link href="/login">
               <Button className="bg-white text-emerald-600 hover:bg-gray-100 font-medium text-lg py-4 px-8 rounded-[1.25rem] transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                 👉 {t("hero.cta1")}
               </Button>
@@ -1088,8 +1088,8 @@ export default function LandingPage() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/student/login" className="text-gray-400 hover:text-white transition-colors">
-                    Student Login
+                  <Link href="/login" className="text-gray-400 hover:text-white transition-colors">
+                    Login
                   </Link>
                 </li>
                 <li>

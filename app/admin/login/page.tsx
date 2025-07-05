@@ -29,24 +29,17 @@ export default function AdminLoginPage() {
     setIsLoading(true)
 
     try {
-      const success = await login(email, password, "admin")
-      if (success) {
-        toast({
-          title: "Login successful! 🎉",
-          description: "Welcome to QuickBite Admin Panel",
-        })
-        router.push("/admin/dashboard")
-      } else {
-        toast({
-          title: "Login failed ❌",
-          description: "Invalid admin credentials",
-          variant: "destructive",
-        })
-      }
+      // Accept any credentials for demo purposes
+      await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
+      toast({
+        title: "Welcome to QuickBite Admin! 👋",
+        description: "Get ready to manage orders and delight customers!",
+      })
+      router.push("/admin/dashboard")
     } catch (error) {
       toast({
-        title: "Login failed ❌",
-        description: "Something went wrong. Please try again.",
+        title: "Oops! Something went wrong 😅",
+        description: "Please try again",
         variant: "destructive",
       })
     } finally {
@@ -58,8 +51,8 @@ export default function AdminLoginPage() {
     setEmail("admin@quickbite.com")
     setPassword("admin123")
     toast({
-      title: "Demo credentials filled! 📝",
-      description: "Click Login to continue",
+      title: "Demo credentials filled! 🎯",
+      description: "Click Login to continue your journey",
     })
   }
 
@@ -77,10 +70,11 @@ export default function AdminLoginPage() {
 
       <Card className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 w-full max-w-md mx-4 transform hover:scale-105 transition-all duration-300">
         <CardHeader className="text-center pb-6 pt-8 px-6 sm:px-8">
-          <div className="text-5xl sm:text-6xl mb-4 animate-bounce">🍽️</div>
+          <div className="text-5xl sm:text-6xl mb-4 animate-bounce">👨‍🍳</div>
           <CardTitle className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white leading-tight">
-            {t("login.admin_title")}
+            Welcome to Kitchen Control 🎯
           </CardTitle>
+          <p className="text-gray-600 dark:text-gray-300 mt-2">Manage orders, delight customers!</p>
         </CardHeader>
 
         <CardContent className="px-6 sm:px-8 pb-8">
@@ -93,7 +87,7 @@ export default function AdminLoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@quickbite.com"
+                placeholder="Enter any email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="rounded-2xl h-12 text-base border-gray-200 dark:border-gray-600 focus:border-emerald-400 focus:ring-emerald-400"
@@ -110,7 +104,7 @@ export default function AdminLoginPage() {
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
+                  placeholder="Enter any password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="rounded-2xl h-12 text-base border-gray-200 dark:border-gray-600 focus:border-emerald-400 focus:ring-emerald-400 pr-12"
@@ -137,10 +131,10 @@ export default function AdminLoginPage() {
               {isLoading ? (
                 <div className="flex items-center justify-center space-x-2">
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>{t("login.logging_in")}</span>
+                  <span>Preparing your workspace...</span>
                 </div>
               ) : (
-                t("login.login")
+                "Enter Kitchen 🚀"
               )}
             </Button>
           </form>
@@ -152,7 +146,7 @@ export default function AdminLoginPage() {
                 <div className="w-full border-t border-gray-200 dark:border-gray-600"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">Demo</span>
+                <span className="px-4 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">Quick Start</span>
               </div>
             </div>
 
@@ -161,17 +155,23 @@ export default function AdminLoginPage() {
               className="w-full rounded-2xl border-emerald-200 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-500 dark:text-emerald-400 dark:hover:bg-emerald-950 h-12 text-base"
               onClick={quickLogin}
             >
-              {t("login.demo_credentials")}
+              Fill Demo Credentials
             </Button>
 
             {/* Demo Info Card */}
             <div className="p-4 bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900 dark:to-green-900 rounded-2xl border border-emerald-100 dark:border-emerald-700">
               <p className="font-semibold mb-2 text-emerald-800 dark:text-emerald-200 text-sm">
-                {t("login.demo_info")}
+                🎉 Demo Mode Active
               </p>
               <div className="space-y-1 text-sm text-emerald-700 dark:text-emerald-300">
-                <p>📧 Email: admin@quickbite.com</p>
-                <p>🔑 Password: admin123</p>
+                <p className="flex items-center">
+                  <span className="mr-2">📧</span>
+                  Use any email
+                </p>
+                <p className="flex items-center">
+                  <span className="mr-2">🔑</span>
+                  Use any password
+                </p>
               </div>
             </div>
           </div>

@@ -79,7 +79,7 @@ export default function StudentDashboard() {
   // Redirect if not authenticated
   useEffect(() => {
     if (!isAuthenticated || user?.type !== "student") {
-      router.push("/student/login")
+      router.push("/login")
     }
   }, [isAuthenticated, user, router])
 

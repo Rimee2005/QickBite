@@ -14,7 +14,7 @@ const translations = {
   en: {
     // Navigation
     "nav.title": "QuickBite 🍽️",
-    "nav.student": "Login as Student",
+    "nav.student": "Order Food 🍽️",
     "nav.admin": "Login as Admin",
 
     // Hero Section
@@ -133,7 +133,7 @@ const translations = {
     "admin.orders_appear": "New orders will appear here in real-time",
 
     // Login
-    "login.student_title": "Student Login",
+    "login.title": "Welcome to QuickBite 🍽️",
     "login.admin_title": "Admin Login - QuickBite",
     "login.email": "Email",
     "login.password": "Password",

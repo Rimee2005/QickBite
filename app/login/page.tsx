@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/auth-context"
 import { useLanguage } from "@/contexts/language-context"
 
-export default function StudentLoginPage() {
+export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -77,9 +77,9 @@ export default function StudentLoginPage() {
 
       <Card className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 w-full max-w-md mx-4 transform hover:scale-105 transition-all duration-300">
         <CardHeader className="text-center pb-6 pt-8 px-6 sm:px-8">
-          <div className="text-5xl sm:text-6xl mb-4 animate-bounce">🎓</div>
+          <div className="text-5xl sm:text-6xl mb-4 animate-bounce">🍽️</div>
           <CardTitle className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white">
-            {t("login.student_title")}
+            {t("login.title")}
           </CardTitle>
         </CardHeader>
 
@@ -185,4 +185,4 @@ export default function StudentLoginPage() {
       </Card>
     </div>
   )
-}
+} 
