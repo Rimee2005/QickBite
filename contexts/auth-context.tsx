@@ -1,75 +1,58 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
-
-interface User {
-  id: string
-  name: string
-  email: string
-  type: "student" | "admin"
-}
+import { createContext, useContext, type ReactNode } from "react"
+import { useSession, signIn, signOut } from "next-auth/react"
+import { useRouter } from "next/navigation"
 
 interface AuthContextType {
-  user: User | null
-  login: (email: string, password: string, type: "student" | "admin") => Promise<boolean>
-  logout: () => void
+  user: {
+    id: string
+    name: string
+    email: string
+    type: "student" | "admin"
+  } | null
+  login: (email: string, password: string) => Promise<boolean>
+  logout: () => Promise<void>
   isAuthenticated: boolean
+  isLoading: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
+  const { data: session, status } = useSession()
+  const router = useRouter()
 
-  useEffect(() => {
-    // Check if user is logged in from localStorage
-    const savedUser = localStorage.getItem("quickbite_user")
-    if (savedUser) {
-      setUser(JSON.parse(savedUser))
-    }
-  }, [])
+  const login = async (email: string, password: string): Promise<boolean> => {
+    try {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      })
 
-  const login = async (email: string, password: string, type: "student" | "admin"): Promise<boolean> => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    if (type === "admin") {
-      if (
-        (email === "admin@quickbite.com" && password === "admin123") ||
-        (email === "admin" && password === "admin123")
-      ) {
-        const adminUser: User = {
-          id: "admin-1",
-          name: "Admin",
-          email: email,
-          type: "admin",
-        }
-        setUser(adminUser)
-        localStorage.setItem("quickbite_user", JSON.stringify(adminUser))
-        return true
+      if (result?.error) {
+        return false
       }
-    } else {
-      // Student login - accept any valid email/password for demo
-      if (email && password) {
-        const studentUser: User = {
-          id: "student-1",
-          name: email.split("@")[0] || "Student",
-          email: email,
-          type: "student",
-        }
-        setUser(studentUser)
-        localStorage.setItem("quickbite_user", JSON.stringify(studentUser))
-        return true
-      }
-    }
 
-    return false
+      return true
+    } catch (error) {
+      console.error("Login error:", error)
+      return false
+    }
   }
 
-  const logout = () => {
-    setUser(null)
-    localStorage.removeItem("quickbite_user")
+  const logout = async () => {
+    await signOut({ redirect: false })
+    router.push("/login")
   }
+
+  const user = session?.user ? {
+    id: session.user.id,
+    name: session.user.name || "",
+    email: session.user.email || "",
+    type: session.user.type as "student" | "admin",
+  } : null
 
   return (
     <AuthContext.Provider
@@ -77,7 +60,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         login,
         logout,
-        isAuthenticated: !!user,
+        isAuthenticated: !!session?.user,
+        isLoading: status === "loading",
       }}
     >
       {children}

@@ -41,7 +41,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { useState, useEffect } from "react"
-import { useTheme } from "@/contexts/theme-context"
+import { useTheme } from "next-themes"
 import { useLanguage } from "@/contexts/language-context"
 import { useToast } from "@/hooks/use-toast"
 
@@ -304,28 +304,27 @@ function AnimatedCounter({ end, duration = 2000, suffix = "" }: { end: number; d
 }
 
 export default function LandingPage() {
-  const [currentTestimonial, setCurrentTestimonial] = useState(0)
-  const [currentSpecial, setCurrentSpecial] = useState(0)
+  const [activeTestimonial, setActiveTestimonial] = useState(0)
   const [canteenOpen, setCanteenOpen] = useState(true)
   const [feedback, setFeedback] = useState("")
-  const [selectedRating, setSelectedRating] = useState<string>("")
-  const { theme, toggleTheme } = useTheme()
-  const { language, setLanguage, t } = useLanguage()
+  const [selectedLanguage, setSelectedLanguage] = useState("en")
   const { toast } = useToast()
+  const { theme, setTheme } = useTheme()
+  const { language, setLanguage, t } = useLanguage()
 
   const nextTestimonial = () => {
-    setCurrentTestimonial((prev) => (prev + 1) % testimonials.length)
+    setActiveTestimonial((prev) => (prev + 1) % testimonials.length)
   }
 
   const prevTestimonial = () => {
-    setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length)
+    setActiveTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length)
   }
 
   // Auto-rotate testimonials and daily specials
   useEffect(() => {
     const testimonialInterval = setInterval(nextTestimonial, 5000)
     const specialInterval = setInterval(() => {
-      setCurrentSpecial((prev) => (prev + 1) % dailySpecials.length)
+      setActiveTestimonial((prev) => (prev + 1) % dailySpecials.length)
     }, 3000)
 
     return () => {
@@ -350,7 +349,7 @@ export default function LandingPage() {
   }, [])
 
   const handleFeedbackSubmit = () => {
-    if (!selectedRating || !feedback.trim()) {
+    if (!selectedLanguage || !feedback.trim()) {
       toast({
         title: "Please provide rating and feedback",
         variant: "destructive",
@@ -364,7 +363,6 @@ export default function LandingPage() {
     })
 
     setFeedback("")
-    setSelectedRating("")
   }
 
   const handleDemoOrder = () => {
@@ -381,14 +379,19 @@ export default function LandingPage() {
     })
   }
 
+  // Update theme toggle to use next-themes
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light")
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
       {/* Daily Specials Banner */}
       <div className="bg-gradient-to-r from-orange-400 to-red-500 text-white py-3 px-4 text-center relative overflow-hidden">
         <div className="animate-pulse">
           <span className="font-bold">
-            {t("special.today")}: {dailySpecials[currentSpecial].name} {dailySpecials[currentSpecial].emoji}{" "}
-            {dailySpecials[currentSpecial].discount}% {t("special.off")} 🔥
+            {t("special.today")}: {dailySpecials[activeTestimonial].name} {dailySpecials[activeTestimonial].emoji}{" "}
+            {dailySpecials[activeTestimonial].discount}% {t("special.off")} 🔥
           </span>
         </div>
       </div>
@@ -782,9 +785,9 @@ export default function LandingPage() {
                   ].map((rating) => (
                     <button
                       key={rating.value}
-                      onClick={() => setSelectedRating(rating.value)}
+                      onClick={() => setSelectedLanguage(rating.value)}
                       className={`text-4xl p-3 rounded-full transition-all duration-200 ${
-                        selectedRating === rating.value
+                        selectedLanguage === rating.value
                           ? "bg-emerald-100 dark:bg-emerald-900 scale-110"
                           : "hover:bg-gray-100 dark:hover:bg-gray-600"
                       }`}
@@ -956,21 +959,21 @@ export default function LandingPage() {
           <div className="relative">
             <Card className="bg-white dark:bg-gray-700 rounded-[1.25rem] shadow-lg border border-gray-100 dark:border-gray-600 p-8">
               <div className="text-center">
-                <div className="text-6xl mb-4">{testimonials[currentTestimonial].avatar}</div>
+                <div className="text-6xl mb-4">{testimonials[activeTestimonial].avatar}</div>
                 <div className="flex justify-center mb-4">
-                  {[...Array(testimonials[currentTestimonial].rating)].map((_, i) => (
+                  {[...Array(testimonials[activeTestimonial].rating)].map((_, i) => (
                     <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
                   ))}
                 </div>
                 <blockquote className="text-lg text-gray-700 dark:text-gray-300 mb-6 italic">
-                  "{testimonials[currentTestimonial].content}"
+                  "{testimonials[activeTestimonial].content}"
                 </blockquote>
                 <div>
                   <div className="font-semibold text-gray-800 dark:text-white">
-                    {testimonials[currentTestimonial].name}
+                    {testimonials[activeTestimonial].name}
                   </div>
                   <div className="text-gray-600 dark:text-gray-400 text-sm">
-                    {testimonials[currentTestimonial].role}
+                    {testimonials[activeTestimonial].role}
                   </div>
                 </div>
               </div>
@@ -981,9 +984,9 @@ export default function LandingPage() {
                 <button
                   key={index}
                   className={`w-3 h-3 rounded-full transition-colors ${
-                    index === currentTestimonial ? "bg-emerald-400" : "bg-gray-300 dark:bg-gray-600"
+                    index === activeTestimonial ? "bg-emerald-400" : "bg-gray-300 dark:bg-gray-600"
                   }`}
-                  onClick={() => setCurrentTestimonial(index)}
+                  onClick={() => setActiveTestimonial(index)}
                 />
               ))}
             </div>

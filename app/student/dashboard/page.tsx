@@ -65,7 +65,7 @@ export default function StudentDashboard() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { toast } = useToast()
   const router = useRouter()
-  const { user, logout, isAuthenticated } = useAuth()
+  const { user, logout, isAuthenticated, isLoading } = useAuth()
   const { items, addItem, updateQuantity, getTotalItems } = useCart()
   const { t } = useLanguage()
 
@@ -78,10 +78,10 @@ export default function StudentDashboard() {
 
   // Redirect if not authenticated
   useEffect(() => {
-    if (!isAuthenticated || user?.type !== "student") {
+    if (!isLoading && (!isAuthenticated || user?.type !== "student")) {
       router.push("/login")
     }
-  }, [isAuthenticated, user, router])
+  }, [isLoading, isAuthenticated, user, router])
 
   const filteredItems = foodItems.filter((item) => {
     const matchesCategory = selectedCategory === "All" || item.category === selectedCategory
@@ -116,8 +116,18 @@ export default function StudentDashboard() {
     router.push("/")
   }
 
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-white dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    )
+  }
+
+  // Don't render anything while redirecting
   if (!isAuthenticated || user?.type !== "student") {
-    return null // Will redirect
+    return null
   }
 
   return (

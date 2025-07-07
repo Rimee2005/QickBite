@@ -6,13 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
-import { ArrowLeft, Mail, Lock, Coffee } from "lucide-react"
+import { ArrowLeft, User2, Mail, Lock } from "lucide-react"
 import Link from "next/link"
-import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 
-export default function LoginPage() {
+export default function AdminRegisterPage() {
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
   })
@@ -32,26 +32,32 @@ export default function LoginPage() {
     setIsLoading(true)
 
     try {
-      const result = await signIn("credentials", {
-        email: formData.email,
-        password: formData.password,
-        redirect: false,
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          type: 'admin',
+        }),
       })
 
-      if (result?.error) {
-        throw new Error(result.error)
+      const data = await response.json()
+
+      if (response.ok) {
+        toast({
+          title: "Admin registration successful! 🎉",
+          description: "Please login to continue",
+        })
+        router.push('/admin/login')
+      } else {
+        throw new Error(data.error || 'Registration failed')
       }
-
-      toast({
-        title: "Login successful! 🎉",
-        description: "Welcome back!",
-      })
-      router.push('/student/dashboard')
-      router.refresh()
     } catch (error) {
       toast({
-        title: "Login failed ❌",
-        description: error instanceof Error ? error.message : "Invalid credentials",
+        title: "Registration failed ❌",
+        description: error instanceof Error ? error.message : "Something went wrong",
         variant: "destructive",
       })
     } finally {
@@ -73,17 +79,32 @@ export default function LoginPage() {
       <Card className="w-full max-w-md mx-auto shadow-xl dark:shadow-emerald-500/10 border-0 dark:bg-gray-800/50 backdrop-blur-sm">
         <CardHeader className="space-y-1 text-center pb-8">
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
-            <Coffee className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
+            <User2 className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
           </div>
           <CardTitle className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-            Welcome Back!
+            Admin Registration
           </CardTitle>
           <CardDescription>
-            Login to order your favorite meals
+            Register as an admin to manage orders
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Name Field */}
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-sm font-medium flex items-center gap-2">
+                <User2 className="w-4 h-4 text-gray-500" />
+                Full Name
+              </Label>
+              <Input
+                id="name"
+                placeholder="Admin Name"
+                value={formData.name}
+                onChange={(e) => handleChange('name', e.target.value)}
+                required
+                className="border-gray-200 focus:border-emerald-500 focus:ring-emerald-500"
+              />
+            </div>
             {/* Email Field */}
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium flex items-center gap-2">
@@ -93,14 +114,13 @@ export default function LoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="john@example.com"
+                placeholder="admin@example.com"
                 value={formData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
                 required
                 className="border-gray-200 focus:border-emerald-500 focus:ring-emerald-500"
               />
             </div>
-
             {/* Password Field */}
             <div className="space-y-2">
               <Label htmlFor="password" className="text-sm font-medium flex items-center gap-2">
@@ -110,14 +130,13 @@ export default function LoginPage() {
               <Input
                 id="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Create a password"
                 value={formData.password}
                 onChange={(e) => handleChange('password', e.target.value)}
                 required
                 className="border-gray-200 focus:border-emerald-500 focus:ring-emerald-500"
               />
             </div>
-
             {/* Submit Button */}
             <Button
               type="submit"
@@ -127,18 +146,17 @@ export default function LoginPage() {
               {isLoading ? (
                 <div className="flex items-center justify-center space-x-2">
                   <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Logging you in...</span>
+                  <span>Registering...</span>
                 </div>
               ) : (
-                'Login'
+                'Register as Admin'
               )}
             </Button>
-
-            {/* Register Link */}
+            {/* Login Link */}
             <p className="text-center text-sm text-gray-600 dark:text-gray-400">
-              Don&apos;t have an account?{' '}
-              <Link href="/register" className="text-emerald-600 hover:text-emerald-700 hover:underline font-medium transition-colors">
-                Register here
+              Already have an account?{' '}
+              <Link href="/admin/login" className="text-emerald-600 hover:text-emerald-700 hover:underline font-medium transition-colors">
+                Login here
               </Link>
             </p>
           </form>
